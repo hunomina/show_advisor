@@ -1,0 +1,8 @@
+# Dataset — not committed (IMDb-derived, redistribution-restricted; bring your own)
+data/
+
+# Built binary
+/showadvisor
+
+# Editor/OS noise
+.DS_Store
