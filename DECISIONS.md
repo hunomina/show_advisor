@@ -217,3 +217,24 @@ they belong in the vector.
 version gives the UI and reproducible builds (chose pinning over `:latest`).
 **Consequence:** the 1.2→1.x storage format jump isn't guaranteed compatible, so
 the volume is wiped and data re-ingested (only synthetic test data existed).
+
+### D18 — Web UI: Vue 3 + Vite + Tailwind v4, served by nginx with API proxy
+
+**Decision:** Add a `frontend/` SPA (Vue 3 `<script setup>`, Vite, Tailwind CSS
+v4) covering all three features (semantic search, find-by-title, "more like
+this"). In Docker it's served by **nginx**, which also **reverse-proxies
+`/api/*` → `http://backend:8080`**. New compose service `frontend` on `:3000`.
+**Why (and why the backend needs NO changes):**
+- **Reverse proxy instead of CORS** — the browser only ever calls the frontend
+  origin (`/api/...`); nginx forwards to the backend. No cross-origin request, so
+  no CORS headers needed on the Go API. (Vite dev server mirrors this with a
+  `/api` proxy.)
+- **uint64 IDs vs JS numbers** — point IDs (FNV hash) exceed
+  `Number.MAX_SAFE_INTEGER`; parsing as JS numbers corrupts them and breaks the
+  `/shows/{id}/similar` round-trip. Handled **client-side**: `api.js` quotes
+  `"id":<digits>` → `"id":"<digits>"` before `JSON.parse`, keeping IDs as exact
+  strings. No backend change.
+- Tailwind v4 chosen for a recent, clean styling setup (single `@import
+  "tailwindcss"` + `@tailwindcss/vite` plugin, no separate config file).
+**Result:** backend untouched; `frontend` is a separate multi-stage image
+(node build → nginx). Verified `npm run build` succeeds.

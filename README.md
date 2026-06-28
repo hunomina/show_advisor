@@ -5,6 +5,8 @@ a vector database. Type a query like *"dark sci-fi with time travel"* and get th
 most semantically similar shows — or pick a specific show and get "more like
 this".
 
+![ShowAdvisor web UI — semantic search results](screenshot.png)
+
 **Stack:** Go · [Qdrant](https://qdrant.tech) (vector DB) · [Ollama](https://ollama.com)
 running `nomic-embed-text` for local embeddings. The app, Qdrant, and Ollama all
 run in Docker via Compose.
@@ -28,13 +30,21 @@ redistribution-restricted). Download it yourself and place the CSV at `data/imdb
 Everything runs in Docker — no local Go needed. After placing the CSV in `data/`:
 
 ```sh
-make up           # start qdrant + ollama + backend (HTTP API)
+make up           # start qdrant + ollama + backend + frontend (builds images)
 make pull-model   # pull nomic-embed-text into Ollama (one-time)
 make ingest       # CSV → embeddings → Qdrant (run after pull-model)
 ```
 
+- **Web UI: <http://localhost:3000>** — the Vue app (search, find-by-title, "more like this")
 - API: <http://localhost:8080>
 - Qdrant dashboard: <http://localhost:6333/dashboard> (`make dashboard`)
+
+## Web UI
+
+A Vue 3 + Vite + Tailwind CSS v4 single-page app (in `frontend/`), served by nginx
+which also reverse-proxies `/api/*` to the backend — so the browser stays
+same-origin (no CORS) and the Go API is unchanged. Covers all features: semantic
+search, find-by-title, and "more like this".
 
 ### Local development (optional, needs Go)
 

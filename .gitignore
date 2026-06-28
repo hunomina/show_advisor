@@ -4,5 +4,10 @@ data/
 # Built binary
 /showadvisor
 
+# Frontend build artifacts / deps
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+
 # Editor/OS noise
 .DS_Store

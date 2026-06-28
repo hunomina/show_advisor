@@ -63,3 +63,13 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done
   ingest/dashboard; dev: dev-serve/dev-ingest/fmt/tidy)
 - [x] `healthcheck` subcommand + compose healthcheck on `backend` (binary self-
   pings `/healthz` — distroless-friendly, no curl/shell needed)
+
+## Frontend (Vue web UI)
+- [x] `frontend/` — Vue 3 + Vite + Tailwind v4 SPA; `npm run build` verified
+- [x] `api.js` — calls `/api/*`; quotes uint64 ids to strings (JS precision)
+- [x] features: semantic search, find-by-title, "more like this" (`ShowCard`,
+  mode toggle, similar section, health indicator)
+- [x] nginx serves SPA + reverse-proxies `/api/*` → backend (no CORS, no backend
+  change); Vite dev proxy mirrors it
+- [x] `frontend/Dockerfile` (node build → nginx) + compose `frontend` service `:3000`
+- [x] gitignore `frontend/node_modules`, `frontend/dist`

@@ -21,8 +21,14 @@ ingest:
 dashboard:
 	open http://localhost:6333/dashboard
 
+ui:
+	open http://localhost:3000
+
 dev-serve:
 	go run ./cmd/showadvisor serve
 
 dev-ingest:
 	go run ./cmd/showadvisor ingest
+
+dev-ui:
+	cd frontend && npm run dev
